@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hugokamón y el sarcófago misterioso</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0; padding: 0; width: 100%; height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #16110c;
+      overflow: hidden;
+    }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .stage {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      background: #16110c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .screen-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #16110c;
+      display: block;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+    .btn-wrap {
+      position: absolute;
+      left: 50%;
+      bottom: 3.5%;
+      transform: translateX(-50%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: min(42vw, 420px);
+      pointer-events: auto;
+    }
+    .game-btn {
+      min-width: min(42vw, 420px);
+      max-width: 90vw;
+      border: 0;
+      border-radius: 999px;
+      padding: 18px 26px;
+      background: linear-gradient(180deg, #d92c1f 0%, #a91611 100%);
+      color: #ffe38a;
+      font-size: clamp(18px, 2.2vw, 32px);
+      font-weight: 800;
+      letter-spacing: .02em;
+      box-shadow: 0 8px 0 #6e0f0c, 0 10px 30px rgba(0,0,0,.35);
+      cursor: pointer;
+      border: 4px solid #f5b73b;
+      text-transform: none;
+    }
+    .game-btn:hover { filter: brightness(1.05); }
+    .game-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 5px 0 #6e0f0c, 0 8px 18px rgba(0,0,0,.35);
+    }
+    .topbar {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .mini {
+      pointer-events: auto;
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 14px;
+      background: rgba(0,0,0,.45);
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .counter {
+      align-self: center;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.45);
+      color: white;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div class="topbar">
+      <button id="prevBtn" class="mini">◀ Atrás</button>
+      <div id="counter" class="counter"></div>
+      <button id="restartBtn" class="mini">↺ Reiniciar</button>
+    </div>
+
+    <img id="screenImage" class="screen-image" alt="Pantalla del juego" />
+
+    <div id="buttonWrap" class="btn-wrap">
+      <button id="nextBtn" class="game-btn"></button>
+    </div>
+  </div>
+
+  <script>
+    const screens = [{"file": "Hugokamon-portada.png", "label": "Jugar"}, {"file": "Tutankamon.png", "label": "Siguiente"}, {"file": "Sarcofago.png", "label": "Siguiente"}, {"file": "Sarcofago2.png", "label": "Empezar a jugar"}, {"file": "Nilo.png", "label": "Siguiente pregunta"}, {"file": "Piramides.png", "label": "Siguiente pregunta"}, {"file": "Esfinge.png", "label": "Siguiente pregunta"}, {"file": "Trueque.png", "label": "Siguiente pregunta"}, {"file": "Papiros.png", "label": "Siguiente pregunta"}, {"file": "Hasganado.png", "label": null}];
+    let index = 0;
+
+    const img = document.getElementById('screenImage');
+    const nextBtn = document.getElementById('nextBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const buttonWrap = document.getElementById('buttonWrap');
+    const counter = document.getElementById('counter');
+
+    function render() {
+      const current = screens[index];
+      img.src = current.file;
+      img.alt = 'Pantalla ' + (index + 1);
+
+      counter.textContent = `Pantalla ${index + 1} de ${screens.length}`;
+
+      if (current.label) {
+        nextBtn.textContent = current.label;
+        buttonWrap.classList.remove('hidden');
+      } else {
+        buttonWrap.classList.add('hidden');
+      }
+
+      if (index === 0) {
+        prevBtn.classList.add('hidden');
+      } else {
+        prevBtn.classList.remove('hidden');
+      }
+    }
+
+    nextBtn.addEventListener('click', () => {
+      if (index < screens.length - 1) {
+        index += 1;
+        render();
+      }
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (index > 0) {
+        index -= 1;
+        render();
+      }
+    });
+
+    restartBtn.addEventListener('click', () => {
+      index = 0;
+      render();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'Enter' || e.key === ' ') {
+        if (index < screens.length - 1 && screens[index].label) {
+          index += 1;
+          render();
+        }
+      }
+      if (e.key === 'ArrowLeft' && index > 0) {
+        index -= 1;
+        render();
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
